@@ -91,11 +91,21 @@ Por favor, digite o número da opção que você deseja:
             userPauseStatus[sender] = true;
             await sock.sendMessage(sender, { text: responses["6"] });
 
-            setTimeout(() => {
-                delete userPauseStatus[sender];
-                sock.sendMessage(sender, { text: "Automação retomada." });
-                sock.sendMessage(sender, { text: mainMenu });
-            }, 600000); // 10 minutos
+            // Intervalo para enviar contagem regressiva a cada 2 minutos
+            let remainingTime = 600000; // 10 minutos
+            const interval = setInterval(() => {
+                remainingTime -= 120000; // Subtrai 2 minutos a cada intervalo
+                if (remainingTime <= 0) {
+                    clearInterval(interval); // Para o intervalo quando o tempo acabar
+                    sock.sendMessage(sender, { text: "O tempo de pausa acabou! A automação foi retomada." });
+                    delete userPauseStatus[sender];
+                    sock.sendMessage(sender, { text: mainMenu });
+                } else {
+                    const minutesRemaining = Math.ceil(remainingTime / 60000);
+                    sock.sendMessage(sender, { text: `Restam ${minutesRemaining} minutos para a pausa acabar.` });
+                }
+            }, 120000); // Envia a cada 2 minutos
+
             return;
         }
 
