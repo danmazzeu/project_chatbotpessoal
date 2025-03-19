@@ -1,4 +1,5 @@
-global.crypto = require('crypto');
+const express = require('express');
+const global = require('crypto');
 const fs = require('fs');
 const makeWASocket = require('@whiskeysockets/baileys').default;
 const { createAuthState } = require('./repositories/authRepository');
@@ -10,8 +11,11 @@ createQRCodeFolder();
 let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
 
-async function startBot() {
+const app = express();
+
+app.get('/', async (req, res) => {
     try {
+        console.log('Acessando URL, iniciando o bot...');
         const { state, saveCreds } = await createAuthState();
         const sock = makeWASocket({ auth: state });
 
@@ -50,9 +54,15 @@ async function startBot() {
             await handleMessage(sock, msg);
         });
 
+        res.send('Bot iniciado com sucesso!');
     } catch (error) {
         console.error('Erro ao iniciar o bot:', error);
+        res.status(500).send('Erro ao iniciar o bot');
     }
-}
+});
 
-startBot();
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
