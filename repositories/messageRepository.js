@@ -14,6 +14,7 @@ async function handleMessage(sock, msg) {
 
     // Comando para pausar o bot (só pode ser usado pelo dono)
     if (text === '/stop') {
+        console.log(sender);
         if (sender !== ownerNumber) {
             await sock.sendMessage(sender, { text: 'Comando restrito ao dono do bot.' });
             return;
