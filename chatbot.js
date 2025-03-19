@@ -2,7 +2,7 @@ const express = require('express');
 const makeWASocket = require('@whiskeysockets/baileys').default;
 const { createAuthState } = require('./repositories/authRepository');
 const { handleMessage } = require('./repositories/messageRepository');
-const qrcode = require('qrcode');  // Usando a biblioteca qrcode diretamente para gerar o QR Code
+const qrcode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
 
@@ -29,7 +29,7 @@ app.get('/', async (req, res) => {
             console.log('Atualização de conexão:', update);
             if (update.qr) {
                 console.log('QR Code gerado:', update.qr);
-                const qrFilePath = path.join(qrCodeFolderPath, 'qrcode.png');
+                const qrFilePath = path.join(qrCodeFolderPath, 'qrcode.jpg');
                 await qrcode.toFile(qrFilePath, update.qr);
                 console.log('QR Code salvo em:', qrFilePath);
 
