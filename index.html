@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <!-- Metatags -->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="language" content="Portuguese">
+        <meta name="description" content="...">
+        <meta name="keywords" content="...">
+        <meta name="author" content="...">
+        <meta name="robots" content="follow, index">
+        <meta name="google" content="notranslate">
+
+        <!-- Social Metatags -->
+        <meta property="og:title" content="...">
+        <meta property="og:description" content="...">
+        <meta property="og:image" content="...">
+        <meta property="og:url" content="...">
+        <meta property="og:type" content="...">
+        <meta property="og:locale" content="pt_BR">
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- Title -->
+        <title>Title</title>
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="...">
+
+        <!-- Scripts -->
+        <script>
+            let counter = 3;
+            setInterval(function() {
+                if (counter > 0) {
+                    counter--;
+                    document.getElementById("counter").textContent = `Atualiza em: ${counter} segundos`;
+                } else {
+                    location.reload();
+                }
+            }, 1000);
+        </script>
+    </head>
+    <body>
+
+        <!-- QRCODE -->
+        <img src="./qrcode/qrcode.jpg" style="width: 350px">
+        <p id="counter">Atualiza em: 3 segundos</p>
+
+    </body>
+</html>
