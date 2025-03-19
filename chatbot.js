@@ -20,7 +20,7 @@ app.use(express.static('qrcode'));
 let botPaused = false;
 let pausedUntil = null;
 
-const ownerNumber = '5516993630686@c.us';  // Use o formato correto de número para WhatsApp (adicionando @c.us)
+const ownerNumber = '5516993630686@c.us';
 
 app.get('/', async (req, res) => {
     try {
