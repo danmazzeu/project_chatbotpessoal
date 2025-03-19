@@ -89,6 +89,8 @@ Por favor, digite o número da opção que você deseja:
 
         if (text.trim() === "6") {
             userPauseStatus[sender] = true;
+        
+            // Definindo os tempos em variáveis para facilitar futuras alterações
             const pauseDuration = 600000; // 10 minutos (duração total da pausa)
             const countdownInterval = 120000; // 2 minutos (intervalo para a contagem regressiva)
             
@@ -99,19 +101,34 @@ Por favor, digite o número da opção que você deseja:
             const interval = setInterval(() => {
                 remainingTime -= countdownInterval;
         
+                // Verifica se o tempo acabou
                 if (remainingTime <= 0) {
-                    clearInterval(interval);
+                    clearInterval(interval); // Para o intervalo
                     sock.sendMessage(sender, { text: "O tempo de pausa acabou! A automação foi retomada." });
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
+                    // Calcula o tempo restante em minutos e envia a mensagem
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
                     sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.` });
                 }
-            }, countdownInterval);
+            }, countdownInterval); // Envia a cada 2 minutos
+        
+            // Função para tratar o comando de finalização
+            sock.ev.on('messages.upsert', async ({ messages }) => {
+                const msg = messages[0];
+                const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
+                if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
+                    clearInterval(interval);
+                    delete userPauseStatus[sender];
+                    sock.sendMessage(sender, { text: "Pausa finalizada. A automação foi retomada." });
+                    sock.sendMessage(sender, { text: mainMenu });
+                }
+            });
         
             return;
-        }        
+        }
+        
 
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
