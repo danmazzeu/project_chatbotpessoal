@@ -20,7 +20,7 @@ app.use(express.static('qrcode'));
 let botPaused = false;
 let pausedUntil = null;
 
-const ownerNumber = '5516993630686@c.us';
+const ownerNumber = '5516993630686@c.us';  // Número do dono no formato correto
 
 app.get('/', async (req, res) => {
     try {
@@ -59,7 +59,7 @@ app.get('/', async (req, res) => {
             const msg = messages[0];
             if (!msg.message || msg.key.fromMe) return;
 
-            // Verificar se é a mensagem do dono e se é "/pausar"
+            // Verificar se a mensagem é do dono e se é "/pausar"
             if (msg.message.conversation === '/pausar' && msg.key.remoteJid === ownerNumber) {
                 if (!botPaused) {
                     console.log('Automação pausada por 15 minutos');
@@ -77,6 +77,18 @@ app.get('/', async (req, res) => {
                     }, 15 * 60 * 1000); // 15 minutos
                 } else {
                     await sock.sendMessage(msg.key.remoteJid, { text: 'A automação já está pausada.' });
+                }
+            }
+
+            // Verificar se a mensagem é do dono e se é "/retomar"
+            if (msg.message.conversation === '/retomar' && msg.key.remoteJid === ownerNumber) {
+                if (botPaused) {
+                    console.log('Bot retomado manualmente');
+                    botPaused = false;
+                    pausedUntil = null;
+                    await sock.sendMessage(msg.key.remoteJid, { text: 'Automação reiniciada!' });
+                } else {
+                    await sock.sendMessage(msg.key.remoteJid, { text: 'A automação já está em funcionamento.' });
                 }
             }
 
