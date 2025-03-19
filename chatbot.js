@@ -9,6 +9,7 @@ createQRCodeFolder();
 
 let reconnectAttempts = 0;
 const maxReconnectAttempts = 5;
+const reconnectDelay = 5000; // Aguarda 5 segundos entre tentativas
 
 async function startBot() {
     try {
@@ -16,38 +17,52 @@ async function startBot() {
         const sock = makeWASocket({ auth: state });
 
         sock.ev.on('connection.update', async (update) => {
-            console.log('Atualização de conexão:', update);
-            if (update.qr) {
-                console.log('QR Code gerado:', update.qr);
-                await generateQRCode(update.qr);
-            }
-            if (update.connection === 'close') {
-                console.error('Conexão fechada. Tentando reiniciar...');
-                if (reconnectAttempts < maxReconnectAttempts) {
-                    reconnectAttempts++;
-                    console.log(`Tentativa de reconexão #${reconnectAttempts}...`);
-                    await new Promise(resolve => setTimeout(resolve, 3000));
-                    await startBot();
-                } else {
-                    console.error('Número máximo de tentativas de reconexão alcançado.');
+            try {
+                console.log('Atualização de conexão:', update);
+
+                if (update.qr) {
+                    console.log('QR Code gerado:', update.qr);
+                    await generateQRCode(update.qr);
                 }
-            }
-            if (update.connection === 'open') {
-                console.log('Bot conectado com sucesso!');
-                reconnectAttempts = 0;
-            }
-            if (update.connection === 'connecting') {
-                console.log('Bot tentando se conectar...');
+
+                switch (update.connection) {
+                    case 'open':
+                        console.log('Bot conectado com sucesso!');
+                        reconnectAttempts = 0;
+                        break;
+                    
+                    case 'close':
+                        console.error('Conexão fechada. Tentando reiniciar...');
+                        if (reconnectAttempts < maxReconnectAttempts) {
+                            reconnectAttempts++;
+                            console.log(`Tentativa de reconexão #${reconnectAttempts} em ${reconnectDelay / 1000} segundos...`);
+                            await new Promise(resolve => setTimeout(resolve, reconnectDelay));
+                            await startBot();
+                        } else {
+                            console.error('Número máximo de tentativas de reconexão alcançado.');
+                        }
+                        break;
+
+                    case 'connecting':
+                        console.log('Bot tentando se conectar...');
+                        break;
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar conexão:', error);
             }
         });
 
         sock.ev.on('creds.update', saveCreds);
 
         sock.ev.on('messages.upsert', async ({ messages }) => {
-            const msg = messages[0];
-            if (!msg.message || msg.key.fromMe) return;
+            try {
+                const msg = messages[0];
+                if (!msg.message || msg.key.fromMe) return;
 
-            await handleMessage(sock, msg);
+                await handleMessage(sock, msg);
+            } catch (error) {
+                console.error('Erro ao processar mensagem:', error);
+            }
         });
 
     } catch (error) {
