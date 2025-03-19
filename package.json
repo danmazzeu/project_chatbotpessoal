@@ -4,7 +4,7 @@
   "description": "",
   "main": "chatbot.js",
   "scripts": {
-    "chatbot.js": "node chatbot.js"
+    "start": "node chatbot.js"
   },
   "keywords": [],
   "author": "",
