@@ -1,15 +1,12 @@
 const fs = require('fs');
 
-let pausedClients = new Set(); // Para armazenar os clientes que pausaram a automação
+let isPaused = false;
 
 async function handleMessage(sock, msg) {
     const sender = msg.key.remoteJid;
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-    // Verifica se o cliente pausou a automação
-    if (pausedClients.has(sender)) {
-        return; // Se o cliente já tiver pausado, a automação não continuará
-    }
+    if (isPaused) { return; }
 
     // Menu principal
     const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
@@ -62,9 +59,9 @@ Opção selecionada: *2 - Redes Sociais*`;
     if (text === '3') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *3 - Deixar recado*.\n\nEscreva sua mensagem, te retornarei assim que possível.\n\n*_A funcionalidade da automatização irá retornar em 3 minutos._*' });
 
-        pausedClients.add(sender); // Adiciona o cliente ao conjunto de pausados
+        isPaused = true;
         setTimeout(() => {
-            pausedClients.delete(sender); // Remove o cliente do conjunto após 3 minutos
+            isPaused = false;
             sock.sendMessage(sender, { text: mainMenu });
         }, 180000); // 3 minutos = 180000 milissegundos
 
@@ -88,9 +85,9 @@ Opção selecionada: *2 - Redes Sociais*`;
     if (text === '6') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *6 - Pausar automação*.\n\nA automação foi pausada pelo período de 15 minutos.' });
 
-        pausedClients.add(sender); // Adiciona o cliente ao conjunto de pausados
+        isPaused = true;
         setTimeout(() => {
-            pausedClients.delete(sender); // Remove o cliente do conjunto após 15 minutos
+            isPaused = false;
             sock.sendMessage(sender, { text: mainMenu });
         }, 900000); // 15 minutos = 900000 milissegundos
 
