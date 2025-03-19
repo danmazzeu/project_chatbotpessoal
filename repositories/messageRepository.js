@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let userPauseStatus = {}; // Armazena o estado de pausa individual de cada usuário
+let userPauseStatus = {};
 
 const responses = {
     "1": `Escolha uma opção:
@@ -31,6 +31,8 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
+    "7": `Opção selecionada: *7 - Meu site*\n\nAqui está o meu site: [https://danielmazzeu.com.br](https://danielmazzeu.com.br)`,
+
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
     "1.2": `Opção selecionada - *Relacionamento*\n\nOptei por seguir o caminho da solitude, pois foi nela que encontrei a verdadeira liberdade e o autoconhecimento. Talvez essa escolha mude com o tempo, mas até agora, não conheci alguém capaz de despertar algo tão profundo em mim, a ponto de me fazer desejar alterar esse caminho.`,
@@ -59,7 +61,7 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        if (userPauseStatus[sender]) return; // Se o usuário está pausado, não responde
+        if (userPauseStatus[sender]) return;
 
         const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
 Por favor, digite o número da opção que você deseja:
@@ -68,6 +70,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 2 ]* Redes Sociais
 *[ 3 ]* Deixar recado
 *[ 4 ]* Chave Pix
+*[ 7 ]* Meu site
 *[ 5 ]* Emergência
 *[ 6 ]* Pausar automação por 10 minutos`;
 
@@ -76,22 +79,20 @@ Por favor, digite o número da opção que você deseja:
             return;
         }
 
-        // Opção 3 - Pausa temporária de 3 minutos para "Deixar Recado"
         if (text.trim() === "3") {
             userPauseStatus[sender] = true;
             setTimeout(() => {
-                delete userPauseStatus[sender]; // Remove a pausa para esse usuário
+                delete userPauseStatus[sender];
                 sock.sendMessage(sender, { text: mainMenu });
             }, 180000); // 3 minutos
         }
 
-        // Opção 6 - Pausar automação por 10 minutos
         if (text.trim() === "6") {
             userPauseStatus[sender] = true;
             await sock.sendMessage(sender, { text: responses["6"] });
 
             setTimeout(() => {
-                delete userPauseStatus[sender]; // Remove a pausa para esse usuário
+                delete userPauseStatus[sender];
                 sock.sendMessage(sender, { text: "Automação retomada. Caso precise de algo, digite uma opção do menu principal." });
             }, 600000); // 10 minutos
             return;
