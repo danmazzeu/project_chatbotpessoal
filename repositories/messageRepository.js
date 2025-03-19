@@ -29,6 +29,8 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!`,
 
+    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
+
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
     "1.2": `Opção selecionada - *Relacionamento*\n\nOptei por seguir o caminho da solitude, pois foi nela que encontrei a verdadeira liberdade e o autoconhecimento. Talvez essa escolha mude com o tempo, mas até agora, não conheci alguém capaz de despertar algo tão profundo em mim, a ponto de me fazer desejar alterar esse caminho.`,
@@ -66,21 +68,34 @@ Por favor, digite o número da opção que você deseja:
 *[ 2 ]* Redes Sociais
 *[ 3 ]* Deixar recado
 *[ 4 ]* Chave Pix
-*[ 5 ]* Emergência`;
+*[ 5 ]* Emergência
+*[ 6 ]* Pausar automação por 10 minutos`;
 
-        // Responde com o menu principal se a mensagem for vazia ou não corresponder a nenhuma opção
+        // Se a mensagem não corresponder a nenhuma opção válida, exibe o menu principal
         if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: mainMenu });
             return;
         }
 
-        // Caso a opção seja "Deixar Recado", ativa o modo de pausa temporário
+        // Opção 3 - Pausa temporária de 3 minutos para "Deixar Recado"
         if (text.trim() === "3") {
             isPaused = true;
             setTimeout(() => {
                 isPaused = false;
                 sock.sendMessage(sender, { text: mainMenu });
             }, 180000); // 3 minutos
+        }
+
+        // Opção 6 - Pausar automação por 10 minutos
+        if (text.trim() === "6") {
+            isPaused = true;
+            await sock.sendMessage(sender, { text: responses["6"] });
+
+            setTimeout(() => {
+                isPaused = false;
+                sock.sendMessage(sender, { text: "Automação retomada. Caso precise de algo, digite uma opção do menu principal." });
+            }, 600000); // 10 minutos
+            return;
         }
 
         // Envia a resposta correspondente
