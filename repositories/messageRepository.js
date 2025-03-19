@@ -4,16 +4,18 @@ let isPaused = false;
 const ownerNumber = '5516993630686'; // Número do dono
 
 async function handleMessage(sock, msg) {
-    const sender = msg.key.remoteJid;
+    const sender = msg.key.remoteJid;  // Usando remoteJid para identificar o remetente
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
     // Verifica se a mensagem foi enviada pelo dono
-    if (msg.key.participant !== ownerNumber) {
+    if (sender !== ownerNumber + '@s.whatsapp.net') {
+        console.log(`Mensagem ignorada. Remetente não autorizado: ${sender}`);
         return; // Ignora mensagens de outros usuários
     }
 
     // Se o bot estiver pausado, não faz nada
-    if (isPaused) { 
+    if (isPaused) {
+        console.log('Bot pausado. Nenhuma resposta será enviada.');
         return; 
     }
 
@@ -38,7 +40,7 @@ Por favor, digite o número da opção que você deseja:
         if (!isPaused) {
             console.log('Bot pausado por comando /stop');
             isPaused = true;
-            await sock.sendMessage(sender, { text: 'O bot foi pausado. Você pode retomar a qualquer momento com o comando /retomar.' });
+            await sock.sendMessage(sender, { text: 'O bot foi pausado. Você pode retomar a qualquer momento com o comando /start.' });
         } else {
             await sock.sendMessage(sender, { text: 'O bot já está pausado.' });
         }
