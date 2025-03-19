@@ -16,8 +16,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 2 ]* Redes Sociais
 *[ 3 ]* Deixar recado
 *[ 4 ]* Chave Pix
-*[ 5 ]* Emergência
-*[ 6 ]* Pausar automação por 15 minutos`;
+*[ 5 ]* Emergência`;
 
     // Exibe o menu principal caso o usuário envie uma mensagem vazia ou qualquer outra coisa
     if (!text) {
@@ -78,19 +77,6 @@ Opção selecionada: *2 - Redes Sociais*`;
     // Exibe submenu de "Emergência"
     if (text === '5') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!' });
-        return;
-    }
-
-    // Exibe submenu de "Pausar automação"
-    if (text === '6') {
-        await sock.sendMessage(sender, { text: 'Opção selecionada: *6 - Pausar automação*.\n\nA automação foi pausada pelo período de 15 minutos.' });
-
-        isPaused = true;
-        setTimeout(() => {
-            isPaused = false;
-            sock.sendMessage(sender, { text: mainMenu });
-        }, 900000); // 15 minutos = 900000 milissegundos
-
         return;
     }
 
