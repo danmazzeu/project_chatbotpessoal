@@ -29,7 +29,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!`,
 
-    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
+    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 15 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
     "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portflólio: https://danielmazzeu.com.br`,
 
@@ -93,8 +93,9 @@ Por favor, digite o número da opção que você deseja:
 
             setTimeout(() => {
                 delete userPauseStatus[sender];
-                sock.sendMessage(sender, { text: "Automação retomada. Caso precise de algo, digite uma opção do menu principal." });
-            }, 600000); // 10 minutos
+                sock.sendMessage(sender, { text: "Automação retomada" });
+                sock.sendMessage(sender, { text: mainMenu });
+            }, 600000); // 15 minutos
             return;
         }
 
