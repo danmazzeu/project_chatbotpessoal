@@ -1,12 +1,21 @@
 const fs = require('fs');
 
 let isPaused = false;
+const ownerNumber = '5516993630686@c.us';  // Número do dono no formato correto
 
 async function handleMessage(sock, msg) {
     const sender = msg.key.remoteJid;
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-    if (isPaused) { return; }
+    // Verifica se a mensagem foi enviada pelo dono
+    if (msg.key.participant !== ownerNumber) {
+        return; // Ignora mensagens de outros usuários
+    }
+
+    // Se o bot estiver pausado, não faz nada
+    if (isPaused) { 
+        return; 
+    }
 
     // Menu principal
     const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
@@ -21,6 +30,30 @@ Por favor, digite o número da opção que você deseja:
     // Exibe o menu principal caso o usuário envie uma mensagem vazia ou qualquer outra coisa
     if (!text) {
         await sock.sendMessage(sender, { text: mainMenu });
+        return;
+    }
+
+    // Comando para pausar o bot
+    if (text === '/stop') {
+        if (!isPaused) {
+            console.log('Bot pausado por comando /stop');
+            isPaused = true;
+            await sock.sendMessage(sender, { text: 'O bot foi pausado. Você pode retomar a qualquer momento com o comando /retomar.' });
+        } else {
+            await sock.sendMessage(sender, { text: 'O bot já está pausado.' });
+        }
+        return;
+    }
+
+    // Comando para retomar o bot
+    if (text === '/start') {
+        if (isPaused) {
+            console.log('Bot retomado por comando /start');
+            isPaused = false;
+            await sock.sendMessage(sender, { text: 'O bot foi retomado e já pode responder novamente.' });
+        } else {
+            await sock.sendMessage(sender, { text: 'O bot já está em funcionamento.' });
+        }
         return;
     }
 
