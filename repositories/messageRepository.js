@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let isPaused = false;
+let userPauseStatus = {}; // Armazena o estado de pausa individual de cada usuário
 
 const responses = {
     "1": `Escolha uma opção:
@@ -59,7 +59,7 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        if (isPaused) return;
+        if (userPauseStatus[sender]) return; // Se o usuário está pausado, não responde
 
         const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
 Por favor, digite o número da opção que você deseja:
@@ -71,7 +71,6 @@ Por favor, digite o número da opção que você deseja:
 *[ 5 ]* Emergência
 *[ 6 ]* Pausar automação por 10 minutos`;
 
-        // Se a mensagem não corresponder a nenhuma opção válida, exibe o menu principal
         if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: mainMenu });
             return;
@@ -79,26 +78,25 @@ Por favor, digite o número da opção que você deseja:
 
         // Opção 3 - Pausa temporária de 3 minutos para "Deixar Recado"
         if (text.trim() === "3") {
-            isPaused = true;
+            userPauseStatus[sender] = true;
             setTimeout(() => {
-                isPaused = false;
+                delete userPauseStatus[sender]; // Remove a pausa para esse usuário
                 sock.sendMessage(sender, { text: mainMenu });
             }, 180000); // 3 minutos
         }
 
         // Opção 6 - Pausar automação por 10 minutos
         if (text.trim() === "6") {
-            isPaused = true;
+            userPauseStatus[sender] = true;
             await sock.sendMessage(sender, { text: responses["6"] });
 
             setTimeout(() => {
-                isPaused = false;
+                delete userPauseStatus[sender]; // Remove a pausa para esse usuário
                 sock.sendMessage(sender, { text: "Automação retomada. Caso precise de algo, digite uma opção do menu principal." });
             }, 600000); // 10 minutos
             return;
         }
 
-        // Envia a resposta correspondente
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
         console.log(`Resposta enviada para ${sender}: ${responses[text.trim()]}`);
