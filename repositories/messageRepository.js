@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 let isPaused = false;  // Variável para verificar se o bot está pausado
-const ownerNumber = '5516993630686';  // Substitua pelo número do dono do bot (formato: '5511xxxxxxxxx')
+const ownerNumber = '5516993630686' + '@s.whatsapp.net';  // Substitua pelo número do dono do bot (formato: '5511xxxxxxxxx')
 
 async function handleMessage(sock, msg) {
     const sender = msg.key.remoteJid;  // O número que enviou a mensagem
