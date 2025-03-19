@@ -31,7 +31,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
-    "7": `Opção selecionada: *7 - Meu site*\n\nAqui está o meu site: https://danielmazzeu.com.br`,
+    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o meu site: https://danielmazzeu.com.br`,
 
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
@@ -70,7 +70,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 2 ]* Redes Sociais
 *[ 3 ]* Deixar recado
 *[ 4 ]* Chave Pix
-*[ 7 ]* Meu site
+*[ 7 ]* Meu portfólio
 *[ 5 ]* Emergência
 *[ 6 ]* Pausar automação por 10 minutos`;
 
