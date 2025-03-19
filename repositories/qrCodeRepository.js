@@ -3,6 +3,7 @@ const path = require('path');
 const qrcode = require('qrcode');
 
 const qrCodeFolderPath = path.resolve(__dirname, '..', 'qrcode');
+console.log(qrCodeFolderPath);
 
 function createQRCodeFolder() {
     if (fs.existsSync(qrCodeFolderPath)) {
