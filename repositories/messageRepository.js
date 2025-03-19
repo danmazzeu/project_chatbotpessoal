@@ -31,7 +31,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
-    "7": `Opção selecionada: *7 - Meu site*\n\nAqui está o meu site: [https://danielmazzeu.com.br](https://danielmazzeu.com.br)`,
+    "7": `Opção selecionada: *7 - Meu site*\n\nAqui está o meu site: https://danielmazzeu.com.br`,
 
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
