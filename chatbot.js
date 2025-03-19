@@ -1,27 +1,17 @@
-const express = require('express');
+global.crypto = require('crypto');
+const fs = require('fs');
 const makeWASocket = require('@whiskeysockets/baileys').default;
 const { createAuthState } = require('./repositories/authRepository');
+const { createQRCodeFolder, generateQRCode } = require('./repositories/qrCodeRepository');
 const { handleMessage } = require('./repositories/messageRepository');
-const qrcode = require('qrcode');
-const fs = require('fs');
-const path = require('path');
 
-// Caminho da pasta 'qrcode' onde o QR Code será salvo
-const qrCodeFolderPath = path.resolve(__dirname, 'qrcode');
-console.log('Caminho da pasta qrcode:', qrCodeFolderPath);
+createQRCodeFolder();
 
-// Verificar se a pasta 'qrcode' existe, se não, criar
-if (!fs.existsSync(qrCodeFolderPath)) {
-    fs.mkdirSync(qrCodeFolderPath, { recursive: true });
-    console.log('Pasta qrcode criada!');
-}
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
 
-const app = express();
-app.use(express.static('qrcode'));
-
-app.get('/', async (req, res) => {
+async function startBot() {
     try {
-        console.log('Acessando URL, iniciando o bot...');
         const { state, saveCreds } = await createAuthState();
         const sock = makeWASocket({ auth: state });
 
@@ -29,24 +19,25 @@ app.get('/', async (req, res) => {
             console.log('Atualização de conexão:', update);
             if (update.qr) {
                 console.log('QR Code gerado:', update.qr);
-                const qrFilePath = path.join(qrCodeFolderPath, 'qrcode.jpg');
-                await qrcode.toFile(qrFilePath, update.qr);
-                console.log('QR Code salvo em:', qrFilePath);
-
-                res.send(`
-                    <html>
-                        <body>
-                            <h1>Escaneie o QR Code para conectar o bot</h1>
-                            <img src="/qrcode.png" alt="QR Code">
-                        </body>
-                    </html>
-                `);
+                await generateQRCode(update.qr);
             }
             if (update.connection === 'close') {
                 console.error('Conexão fechada. Tentando reiniciar...');
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                    console.log(`Tentativa de reconexão #${reconnectAttempts}...`);
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    await startBot();
+                } else {
+                    console.error('Número máximo de tentativas de reconexão alcançado.');
+                }
             }
             if (update.connection === 'open') {
                 console.log('Bot conectado com sucesso!');
+                reconnectAttempts = 0;
+            }
+            if (update.connection === 'connecting') {
+                console.log('Bot tentando se conectar...');
             }
         });
 
@@ -61,12 +52,7 @@ app.get('/', async (req, res) => {
 
     } catch (error) {
         console.error('Erro ao iniciar o bot:', error);
-        res.status(500).send('Erro ao iniciar o bot');
     }
-});
+}
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+startBot();
