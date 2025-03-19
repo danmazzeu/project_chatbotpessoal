@@ -39,7 +39,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "1.4": `Opção selecionada - *Cor favorita*\n\nMinha cor favorita é o laranja, mas, pela praticidade, prefiro usar apenas branco e preto no dia a dia. As cores ficam reservadas para projetos, ideias e decorações. Algo que eu possa expressar minha criatividade.`,
 
-    "1.5": `Opção selecionada - *Música favorita*\n\nNão tenho uma música favorita. Antigamente, costumava ouvir muitas, mas decidi parar. A música desperta sentimentos, e esses sentimentos acabam gerando reflexões, algo que estou evitando no momento. Estou tentando fugir de mim, mas, onde quer que eu vá, acabo me encontrando.\n\nNo entanto, posso deixar uma dica de uma música que gosto bastante:\n*Sleep Token - Take Me Back To Eden*.`,
+    "1.5": `Opção selecionada - *Música favorita*\n\nNão tenho uma música favorita. Antigamente, costumava ouvir muitas, mas decidi parar. A música desperta sentimentos, e esses sentimentos acabam gerando reflexões, algo que estou evitando no momento. Estou tentando fugir de mim, mas, onde quer que eu vá, acabo me encontrando.\n\nNo entanto, posso deixar uma dica de uma música que gosto bastante:\n*Sleep Token - Take Me Back To Eden*.\n\nhttps://www.youtube.com/watch?v=vFHBOKa_ZG0`,
 
     "1.6": `Opção selecionada - *Livro favorito*\n\nMeu livro preferido é a Bíblia, pois nela está tudo o que a humanidade precisa para alcançar a perfeição. O problema é que isso exige um grande esforço coletivo, e o resultado máximo só poderia ser conquistado com a união de todos. Infelizmente, falhamos, miseravelmente.`,
 
