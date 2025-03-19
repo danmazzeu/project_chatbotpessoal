@@ -1,6 +1,27 @@
 const fs = require('fs');
 
-let pausedClients = new Set(); // Para armazenar os clientes que pausaram a automação
+let pausedClients = new Map();
+
+// Função para pausar a automação
+async function pauseBot(sock, sender, duration) {
+    pausedClients.set(sender, duration);
+
+    setInterval(() => {
+        const remainingTime = pausedClients.get(sender);
+        if (remainingTime <= 0) {
+            pausedClients.delete(sender);
+            sock.sendMessage(sender, { text: 'A automação foi retomada!' });
+        } else {
+            pausedClients.set(sender, remainingTime - 300000);
+            const minutesLeft = Math.ceil(remainingTime / 60000);
+            sock.sendMessage(sender, {
+                text: `A automação está pausada. Faltam ${minutesLeft} minutos para o retorno da funcionalidade.`
+            });
+        }
+    }, 300000); // A cada 5 minutos
+
+    await sock.sendMessage(sender, { text: `A automação foi pausada por ${duration / 60000} minutos.` });
+}
 
 async function handleMessage(sock, msg) {
     const sender = msg.key.remoteJid;
@@ -8,7 +29,13 @@ async function handleMessage(sock, msg) {
 
     // Verifica se o cliente pausou a automação
     if (pausedClients.has(sender)) {
-        return; // Se o cliente já tiver pausado, a automação não continuará
+        const remainingTime = pausedClients.get(sender);
+
+        if (remainingTime > 0) {
+            const minutesLeft = Math.ceil(remainingTime / 60000); // Converte o tempo restante para minutos
+            await sock.sendMessage(sender, { text: `A automação está pausada. Faltam ${minutesLeft} minutos para o retorno da funcionalidade.` });
+        }
+        return;
     }
 
     // Menu principal
@@ -28,7 +55,7 @@ Por favor, digite o número da opção que você deseja:
         return;
     }
 
-    // Exibe submenu de "Sobre Você"
+    // Exibe submenu de "Sobre"
     if (text === '1') {
         const submenuSobreVoce = `Escolha uma opção:
 
@@ -62,12 +89,7 @@ Opção selecionada: *2 - Redes Sociais*`;
     if (text === '3') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *3 - Deixar recado*.\n\nEscreva sua mensagem, te retornarei assim que possível.\n\n*_A funcionalidade da automatização irá retornar em 3 minutos._*' });
 
-        pausedClients.add(sender); // Adiciona o cliente ao conjunto de pausados
-        setTimeout(() => {
-            pausedClients.delete(sender); // Remove o cliente do conjunto após 3 minutos
-            sock.sendMessage(sender, { text: mainMenu });
-        }, 180000); // 3 minutos = 180000 milissegundos
-
+        pauseBot(sock, sender, 180000); // Pausa por 3 minutos
         return;
     }
 
@@ -87,13 +109,7 @@ Opção selecionada: *2 - Redes Sociais*`;
     // Exibe submenu de "Pausar automação"
     if (text === '6') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *6 - Pausar automação*.\n\nA automação foi pausada pelo período de 15 minutos.' });
-
-        pausedClients.add(sender); // Adiciona o cliente ao conjunto de pausados
-        setTimeout(() => {
-            pausedClients.delete(sender); // Remove o cliente do conjunto após 15 minutos
-            sock.sendMessage(sender, { text: mainMenu });
-        }, 900000); // 15 minutos = 900000 milissegundos
-
+        pauseBot(sock, sender, 900000); // Pausa por 15 minutos
         return;
     }
 
