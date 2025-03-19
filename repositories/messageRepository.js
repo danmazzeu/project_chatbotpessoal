@@ -1,18 +1,24 @@
 const fs = require('fs');
 
 let isPaused = false;  // Variável para verificar se o bot está pausado
+const ownerNumber = '5516993630686';  // Substitua pelo número do dono do bot (formato: '5511xxxxxxxxx')
 
 async function handleMessage(sock, msg) {
     const sender = msg.key.remoteJid;  // O número que enviou a mensagem
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-    // Se o bot estiver pausado, não faz nada
-    if (isPaused) { 
+    // Se o bot estiver pausado e não for o dono, não faz nada
+    if (isPaused && sender !== ownerNumber) { 
         return; 
     }
 
-    // Comando para pausar o bot
+    // Comando para pausar o bot (só pode ser usado pelo dono)
     if (text === '/stop') {
+        if (sender !== ownerNumber) {
+            await sock.sendMessage(sender, { text: 'Comando restrito ao dono do bot.' });
+            return;
+        }
+
         if (!isPaused) {
             console.log('Bot pausado por comando /stop');
             isPaused = true;
@@ -23,8 +29,13 @@ async function handleMessage(sock, msg) {
         return;
     }
 
-    // Comando para retomar o bot
+    // Comando para retomar o bot (só pode ser usado pelo dono)
     if (text === '/start') {
+        if (sender !== ownerNumber) {
+            await sock.sendMessage(sender, { text: 'Comando restrito ao dono do bot.' });
+            return;
+        }
+
         if (isPaused) {
             console.log('Bot retomado por comando /start');
             isPaused = false;
