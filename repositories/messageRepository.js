@@ -63,7 +63,7 @@ async function handleMessage(sock, msg) {
 
         if (userPauseStatus[sender]) return;
 
-        const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse.
+        const mainMenu = `Olá, decidi me afastar um pouco da tecnologia, então desenvolvi algo que me substituísse.
 Por favor, digite o número da opção que você deseja:
 
 *[ 1 ]* Sobre
