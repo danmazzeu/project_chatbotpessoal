@@ -1,51 +1,12 @@
 const fs = require('fs');
 
-let isPaused = false;  // Variável para verificar se o bot está pausado
-const ownerNumber = '5516993630686' + '@s.whatsapp.net';  // Substitua pelo número do dono do bot (formato: '5511xxxxxxxxx')
+let isPaused = false;
 
 async function handleMessage(sock, msg) {
-    const sender = msg.key.remoteJid;  // O número que enviou a mensagem
+    const sender = msg.key.remoteJid;
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-    // Se o bot estiver pausado e não for o dono, não faz nada
-    if (isPaused && sender !== ownerNumber) { 
-        return; 
-    }
-
-    // Comando para pausar o bot (só pode ser usado pelo dono)
-    if (text === '/stop') {
-        console.log(sender);
-        if (sender !== ownerNumber) {
-            await sock.sendMessage(sender, { text: 'Comando restrito ao dono do bot.' });
-            return;
-        }
-
-        if (!isPaused) {
-            console.log('Bot pausado por comando /stop');
-            isPaused = true;
-            await sock.sendMessage(sender, { text: 'O bot foi pausado. Você pode retomar a qualquer momento com o comando /start.' });
-        } else {
-            await sock.sendMessage(sender, { text: 'O bot já está pausado.' });
-        }
-        return;
-    }
-
-    // Comando para retomar o bot (só pode ser usado pelo dono)
-    if (text === '/start') {
-        if (sender !== ownerNumber) {
-            await sock.sendMessage(sender, { text: 'Comando restrito ao dono do bot.' });
-            return;
-        }
-
-        if (isPaused) {
-            console.log('Bot retomado por comando /start');
-            isPaused = false;
-            await sock.sendMessage(sender, { text: 'O bot foi retomado e já pode responder novamente.' });
-        } else {
-            await sock.sendMessage(sender, { text: 'O bot já está em funcionamento.' });
-        }
-        return;
-    }
+    if (isPaused) { return; }
 
     // Menu principal
     const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
@@ -55,7 +16,8 @@ Por favor, digite o número da opção que você deseja:
 *[ 2 ]* Redes Sociais
 *[ 3 ]* Deixar recado
 *[ 4 ]* Chave Pix
-*[ 5 ]* Emergência`;
+*[ 5 ]* Emergência
+*[ 6 ]* Pausar automação por 15 minutos`;
 
     // Exibe o menu principal caso o usuário envie uma mensagem vazia ou qualquer outra coisa
     if (!text) {
@@ -116,6 +78,19 @@ Opção selecionada: *2 - Redes Sociais*`;
     // Exibe submenu de "Emergência"
     if (text === '5') {
         await sock.sendMessage(sender, { text: 'Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!' });
+        return;
+    }
+
+    // Exibe submenu de "Pausar automação"
+    if (text === '6') {
+        await sock.sendMessage(sender, { text: 'Opção selecionada: *6 - Pausar automação*.\n\nA automação foi pausada pelo período de 15 minutos.' });
+
+        isPaused = true;
+        setTimeout(() => {
+            isPaused = false;
+            sock.sendMessage(sender, { text: mainMenu });
+        }, 900000); // 15 minutos = 900000 milissegundos
+
         return;
     }
 
