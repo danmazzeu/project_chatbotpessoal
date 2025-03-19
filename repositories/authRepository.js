@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { useMultiFileAuthState } = require('@whiskeysockets/baileys');
 
-const authFolderPath = path.resolve(__dirname, '..', 'auth');
+// Alterando o caminho para '/tmp', que é geralmente acessível em containers
+const authFolderPath = path.resolve('/tmp', 'auth');
 
 function createAuthFolder() {
     if (!fs.existsSync(authFolderPath)) {

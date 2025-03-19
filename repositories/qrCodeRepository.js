@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const qrcode = require('qrcode');
 
-const qrCodeFolderPath = path.resolve(__dirname, '..', 'qrcode');
+// Diretório para armazenar o QR Code, alterado para '/tmp' para garantir que seja acessível no Railway
+const qrCodeFolderPath = path.resolve('/tmp', 'qrcode');
 console.log(qrCodeFolderPath);
 
 function createQRCodeFolder() {
