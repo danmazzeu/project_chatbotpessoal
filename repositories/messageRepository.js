@@ -23,7 +23,7 @@ Opção selecionada: *1* - Sobre`,
 
 Opção selecionada: *2 - Redes Sociais*`,
 
-    "3": `Opção selecionada: *3 - Deixar recado*.\n\nEscreva sua mensagem, te retornarei assim que possível.\n\n*_A funcionalidade da automatização irá retornar em 3 minutos._*`,
+    "3": `Opção selecionada: *3 - Deixar recado*.\n\nEscreva sua mensagem, te retornarei assim que possível.\n\n*_A funcionalidade da automatização irá retornar em 5 minutos._*`,
 
     "4": `Opção selecionada: *4 - Chave Pix*\n\nDepois eu coloco...`,
 
@@ -84,30 +84,34 @@ Por favor, digite o número da opção que você deseja:
             setTimeout(() => {
                 delete userPauseStatus[sender];
                 sock.sendMessage(sender, { text: mainMenu });
-            }, 180000); // 3 minutos
+            }, 300000); // 5 minutos
         }
 
         if (text.trim() === "6") {
             userPauseStatus[sender] = true;
+            const pauseDuration = 600000; // 10 minutos (duração total da pausa)
+            const countdownInterval = 120000; // 2 minutos (intervalo para a contagem regressiva)
+            
             await sock.sendMessage(sender, { text: responses["6"] });
-
-            // Intervalo para enviar contagem regressiva a cada 2 minutos
-            let remainingTime = 600000; // 10 minutos
+        
+            let remainingTime = pauseDuration;
+        
             const interval = setInterval(() => {
-                remainingTime -= 120000; // Subtrai 2 minutos a cada intervalo
+                remainingTime -= countdownInterval;
+        
                 if (remainingTime <= 0) {
-                    clearInterval(interval); // Para o intervalo quando o tempo acabar
+                    clearInterval(interval);
                     sock.sendMessage(sender, { text: "O tempo de pausa acabou! A automação foi retomada." });
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
-                    sock.sendMessage(sender, { text: `Restam ${minutesRemaining} minutos para a pausa acabar.` });
+                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.` });
                 }
-            }, 120000); // Envia a cada 2 minutos
-
+            }, countdownInterval);
+        
             return;
-        }
+        }        
 
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
