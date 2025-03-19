@@ -20,7 +20,7 @@ app.use(express.static('qrcode'));
 let botPaused = false;
 let pausedUntil = null;
 
-const ownerNumber = '5516993630686';
+const ownerNumber = '5516993630686@c.us';  // Use o formato correto de número para WhatsApp (adicionando @c.us)
 
 app.get('/', async (req, res) => {
     try {
@@ -60,13 +60,13 @@ app.get('/', async (req, res) => {
             if (!msg.message || msg.key.fromMe) return;
 
             // Verificar se é a mensagem do dono e se é "/pausar"
-            if (msg.message.conversation === '/pausar' && msg.key.fromMe && msg.key.participant === ownerNumber) {
+            if (msg.message.conversation === '/pausar' && msg.key.remoteJid === ownerNumber) {
                 if (!botPaused) {
                     console.log('Automação pausada por 15 minutos');
                     botPaused = true;
                     pausedUntil = Date.now() + 15 * 60 * 1000; // 15 minutos em milissegundos
 
-                    await sock.sendMessage(msg.key.remoteJid, { text: 'Automação pausado por 15 minutos.' });
+                    await sock.sendMessage(msg.key.remoteJid, { text: 'Automação pausada por 15 minutos.' });
 
                     // Após 15 minutos, retomar o bot
                     setTimeout(() => {
@@ -76,7 +76,7 @@ app.get('/', async (req, res) => {
                         sock.sendMessage(msg.key.remoteJid, { text: 'Automação reiniciada!' });
                     }, 15 * 60 * 1000); // 15 minutos
                 } else {
-                    await sock.sendMessage(msg.key.remoteJid, { text: 'A Automação já está pausada.' });
+                    await sock.sendMessage(msg.key.remoteJid, { text: 'A automação já está pausada.' });
                 }
             }
 
