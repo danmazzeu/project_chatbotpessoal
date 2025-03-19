@@ -1,38 +1,14 @@
 const fs = require('fs');
 
-let isPaused = false;
-const ownerNumber = '5516993630686'; // Número do dono
+let isPaused = false;  // Variável para verificar se o bot está pausado
 
 async function handleMessage(sock, msg) {
-    const sender = msg.key.remoteJid;  // Usando remoteJid para identificar o remetente
+    const sender = msg.key.remoteJid;  // O número que enviou a mensagem
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
 
-    // Verifica se a mensagem foi enviada pelo dono
-    if (sender !== ownerNumber + '@s.whatsapp.net') {
-        console.log(`Mensagem ignorada. Remetente não autorizado: ${sender}`);
-        return; // Ignora mensagens de outros usuários
-    }
-
     // Se o bot estiver pausado, não faz nada
-    if (isPaused) {
-        console.log('Bot pausado. Nenhuma resposta será enviada.');
+    if (isPaused) { 
         return; 
-    }
-
-    // Menu principal
-    const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
-Por favor, digite o número da opção que você deseja:
-
-*[ 1 ]* Sobre
-*[ 2 ]* Redes Sociais
-*[ 3 ]* Deixar recado
-*[ 4 ]* Chave Pix
-*[ 5 ]* Emergência`;
-
-    // Exibe o menu principal caso o usuário envie uma mensagem vazia ou qualquer outra coisa
-    if (!text) {
-        await sock.sendMessage(sender, { text: mainMenu });
-        return;
     }
 
     // Comando para pausar o bot
@@ -56,6 +32,22 @@ Por favor, digite o número da opção que você deseja:
         } else {
             await sock.sendMessage(sender, { text: 'O bot já está em funcionamento.' });
         }
+        return;
+    }
+
+    // Menu principal
+    const mainMenu = `Olá, decidi me afastar um pouco da tecnologia então desenvolvi algo que me substituísse. Abaixo estão as opções para você saber sobre mim, sem eu precisar estar aqui para responder.
+Por favor, digite o número da opção que você deseja:
+
+*[ 1 ]* Sobre
+*[ 2 ]* Redes Sociais
+*[ 3 ]* Deixar recado
+*[ 4 ]* Chave Pix
+*[ 5 ]* Emergência`;
+
+    // Exibe o menu principal caso o usuário envie uma mensagem vazia ou qualquer outra coisa
+    if (!text) {
+        await sock.sendMessage(sender, { text: mainMenu });
         return;
     }
 
