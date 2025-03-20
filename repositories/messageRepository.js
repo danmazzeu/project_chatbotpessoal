@@ -62,10 +62,9 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        // Verifica se o usuário está em pausa
+        // Se o usuário estiver em pausa, não faz nada
         if (userPauseStatus[sender]) {
-            // Não responde se o usuário estiver em pausa
-            return;
+            return;  // Nenhuma resposta será enviada enquanto em pausa
         }
 
         const mainMenu = `Olá, tudo bom? Esse chat é automatizado.
@@ -85,16 +84,17 @@ Por favor, digite o número da opção que você deseja:
             return;
         }
 
-        // Verificação para finalizar pausa
+        // Finalizar pausa
         if (text.trim() === "/finalizar" && userPauseStatus[sender]) {
             clearInterval(userInterval[sender]);
             delete userPauseStatus[sender];
             sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
             sock.sendMessage(sender, { text: mainMenu });
-            return;  // Impede o envio da resposta após finalização
+            return;  // Impede resposta adicional após finalização da pausa
         }
 
         if (text.trim() === "3") {
+            // Ativa a pausa de 5 minutos (recado)
             userPauseStatus[sender] = true;
             setTimeout(() => {
                 delete userPauseStatus[sender];
@@ -103,6 +103,7 @@ Por favor, digite o número da opção que você deseja:
         }
 
         if (text.trim() === "0") {
+            // Pausa a automação por 10 minutos
             userPauseStatus[sender] = true;
             const pauseDuration = 600000; // 10 minutos
             const countdownInterval = 120000; // 2 minutos
@@ -127,9 +128,10 @@ Por favor, digite o número da opção que você deseja:
 
             userInterval[sender] = interval;
 
-            return;
+            return;  // Impede a execução de outras respostas enquanto estiver em pausa
         }
 
+        // Responde normalmente se não estiver em pausa
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
         console.log(`Resposta enviada para ${sender}: ${responses[text.trim()]}`);
