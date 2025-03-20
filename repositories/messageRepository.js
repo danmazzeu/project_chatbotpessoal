@@ -76,7 +76,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 5 ]* Emergência
 *[ 0 ]* Pausar automação por 10 minutos`;
 
-        if (!text || !responses[text.trim()] || text.trim() === "/finalizar") {
+        if (!text || !responses[text.trim()] || !text.trim() === "/finalizar") {
             await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
