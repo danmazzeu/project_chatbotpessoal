@@ -121,7 +121,7 @@ Por favor, digite o número da opção que você deseja:
                 if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
                     clearInterval(interval);
                     delete userPauseStatus[sender];
-                    sock.sendMessage(sender, { text: "Pausa finalizada. A automação foi retomada." });
+                    sock.sendMessage(sender, { text: "*Pausa finalizada. A automação foi retomada.*" });
                     sock.sendMessage(sender, { text: mainMenu });
                 }
             });
