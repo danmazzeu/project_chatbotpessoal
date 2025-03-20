@@ -1,7 +1,6 @@
 const fs = require('fs');
 
-let userPauseStatus = {};  // Armazenar o status de pausa dos usuários
-let userInterval = {};     // Armazenar o intervalo de cada usuário para controle de pausa
+let userPauseStatus = {};
 
 const responses = {
     "1": `Escolha uma opção:
@@ -32,7 +31,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
-    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portfólio: https://danielmazzeu.com.br`,
+    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portflólio: https://danielmazzeu.com.br`,
 
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
@@ -48,7 +47,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "1.7": `Opção selecionada - *Filme favorito*\n\nNunca fui muito de assistir filmes, mas o único que me fez repetir inúmeras vezes foi John Wick, 1, 2, 3 e 4. Esses filmes revelam segredos e valores morais de um homem de bem, que valoriza o que é realmente importante até o último segundo, mesmo que isso custe sua própria vida.\n\nhttps://www.youtube.com/watch?v=ROFnIg4_Uio`,
 
-    "1.8": `Opção selecionada - *Política*\n\nA política muitas vezes se mostra uma perda de tempo. Ela favorece apenas aqueles que estão no poder, enquanto o povo é frequentemente negligenciado. Independentemente do partido, os políticos, em sua maioria, são os piores tipos de seres humanos. Aqueles que deveriam guiar a população com sabedoria e compaixão, usando seu conhecimento para o bem comum, acabam abusando da confiança das pessoas. Na política, a virtude parece inexistir. Se você torce para algum político ou partido, nem me mande mensagem.`,
+    "1.8": `Opção selecionada - *Política*\n\nA política muitas vezes se mostra uma perda de tempo. Ela favorece apenas aqueles que estão no poder, enquanto o povo é frequentemente negligenciado. Independentemente do partido, os políticos, em sua maioria, são os piores tipos de seres humanos. Aqueles que deveriam guiar a população com sabedoria e compaixão, usando seu conhecimento para o bem comum, acabam abusando da confiança das pessoas. Na política, a virtude parece inexistir. Se você torce para algum político ou, nem me mande mensagem.`,
 
     "1.9": `Opção selecionada - *Comida favorita*\n\nComo de tudo, sem frescura.\nNão sou fã de doce apenas.`,
 
@@ -62,10 +61,7 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        // Se o usuário estiver em pausa, não faz nada
-        if (userPauseStatus[sender]) {
-            return;  // Nenhuma resposta será enviada enquanto em pausa
-        }
+        if (userPauseStatus[sender]) return;
 
         const mainMenu = `Olá, tudo bom? Esse chat é automatizado.
 Por favor, digite o número da opção que você deseja:
@@ -79,22 +75,11 @@ Por favor, digite o número da opção que você deseja:
 *[ 0 ]* Pausar automação por 10 minutos`;
 
         if (!text || !responses[text.trim()]) {
-            await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
         }
 
-        // Finalizar pausa
-        if (text.trim() === "/finalizar" && userPauseStatus[sender]) {
-            clearInterval(userInterval[sender]);
-            delete userPauseStatus[sender];
-            sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
-            sock.sendMessage(sender, { text: mainMenu });
-            return;  // Impede resposta adicional após finalização da pausa
-        }
-
         if (text.trim() === "3") {
-            // Ativa a pausa de 5 minutos (recado)
             userPauseStatus[sender] = true;
             setTimeout(() => {
                 delete userPauseStatus[sender];
@@ -103,35 +88,35 @@ Por favor, digite o número da opção que você deseja:
         }
 
         if (text.trim() === "0") {
-            // Pausa a automação por 10 minutos
             userPauseStatus[sender] = true;
-            const pauseDuration = 600000; // 10 minutos
-            const countdownInterval = 120000; // 2 minutos
-
+        
+            // Definindo os tempos em variáveis para facilitar futuras alterações
+            const pauseDuration = 600000; // 10 minutos (duração total da pausa)
+            const countdownInterval = 120000; // 2 minutos (intervalo para a contagem regressiva)
+            
             await sock.sendMessage(sender, { text: responses["6"] });
-
+        
             let remainingTime = pauseDuration;
-
+        
             const interval = setInterval(() => {
                 remainingTime -= countdownInterval;
-
+        
+                // Verifica se o tempo acabou
                 if (remainingTime <= 0) {
-                    clearInterval(interval);
-                    delete userPauseStatus[sender];
+                    clearInterval(interval); // Para o intervalo
                     sock.sendMessage(sender, { text: "O tempo de pausa acabou! A automação foi retomada." });
+                    delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
+                    // Calcula o tempo restante em minutos e envia a mensagem
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
-                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.\nPara encerrar a pausa, digite a qualquer momento\n*/finalizar*` });
+                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.` });
                 }
-            }, countdownInterval);
+            }, countdownInterval); // Envia a cada 2 minutos
 
-            userInterval[sender] = interval;
-
-            return;  // Impede a execução de outras respostas enquanto estiver em pausa
+            return;
         }
-
-        // Responde normalmente se não estiver em pausa
+        
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
         console.log(`Resposta enviada para ${sender}: ${responses[text.trim()]}`);
