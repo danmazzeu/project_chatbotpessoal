@@ -124,7 +124,6 @@ Por favor, digite o número da opção que você deseja:
                     clearInterval(userInterval[sender]);
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
-                    sock.sendMessage(sender, { text: mainMenu });
                 }
             });
 
