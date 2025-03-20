@@ -111,6 +111,7 @@ Por favor, digite o número da opção que você deseja:
                 }
             }, countdownInterval);
 
+            // Colocando a escuta do comando de finalização fora da função handleMessage
             sock.ev.on('messages.upsert', async ({ messages }) => {
                 const msg = messages[0];
                 const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
