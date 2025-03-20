@@ -114,7 +114,7 @@ Por favor, digite o número da opção que você deseja:
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
-                    const minutesRemaining = Math.ceil(remainingTime / 60000);
+                    const minutesRemaining = Math.floor(remainingTime / 60000); // arredondando para o número inteiro mais próximo
                     sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.\n\nCaso queira retomar a automação em qualquer momento digite:\n*/retomar*` });
                 }
             }, countdownInterval);
