@@ -30,9 +30,9 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!`,
 
-    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por *15 minutos*. Durante esse período, as mensagens não serão respondidas automaticamente.\n\nCaso queira retomar a automação em qualquer momento digite:\n*/retomar*`,
+    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por *10 minutos*. Durante esse período, as mensagens não serão respondidas automaticamente.\n\nCaso queira retomar a automação em qualquer momento digite:\n*/retomar*`,
 
-    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portfólio: https://danielmazzeu.com.br`,
+    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portflólio: https://danielmazzeu.com.br`,
 
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
@@ -81,7 +81,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 4 ]* Chave Pix
 *[ 7 ]* Meu portfólio
 *[ 5 ]* Emergência
-*[ 6 ]* Pausar automação por 15 minutos`;
+*[ 6 ]* Pausar automação por 10 minutos`;
 
         if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: mainMenu });
@@ -98,8 +98,8 @@ Por favor, digite o número da opção que você deseja:
 
         if (text.trim() === "6") {
             userPauseStatus[sender] = true;
-            const pauseDuration = 900000; // 15 minutos (duração total da pausa)
-            const countdownInterval = 300000; // 5 minutos (intervalo para a contagem regressiva)
+            const pauseDuration = 600000; // 10 minutos (duração total da pausa)
+            const countdownInterval = 120000; // 2 minutos (intervalo para a contagem regressiva)
             
             await sock.sendMessage(sender, { text: responses["6"] });
         
@@ -114,7 +114,7 @@ Por favor, digite o número da opção que você deseja:
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
-                    const minutesRemaining = Math.floor(remainingTime / 60000); // arredondando para o número inteiro mais próximo
+                    const minutesRemaining = Math.ceil(remainingTime / 60000);
                     sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.\n\nCaso queira retomar a automação em qualquer momento digite:\n*/retomar*` });
                 }
             }, countdownInterval);
