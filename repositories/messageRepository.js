@@ -72,7 +72,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 4 ]* Chave Pix
 *[ 7 ]* Meu portfólio
 *[ 5 ]* Emergência
-*[ 6 ]* Pausar automação por 10 minutos`;
+*[ 0 ]* Pausar automação por 10 minutos`;
 
         if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: mainMenu });
@@ -87,7 +87,7 @@ Por favor, digite o número da opção que você deseja:
             }, 300000); // 5 minutos
         }
 
-        if (text.trim() === "6") {
+        if (text.trim() === "0") {
             userPauseStatus[sender] = true;
         
             // Definindo os tempos em variáveis para facilitar futuras alterações
