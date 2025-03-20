@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 let userPauseStatus = {};
+let remainingTime = 0;
 
 const responses = {
     "1": `Escolha uma opção:
@@ -61,7 +62,15 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        if (userPauseStatus[sender]) return;
+        if (userPauseStatus[sender]) {
+            if (text.trim() === "/finalizar") {
+                sock.sendMessage(sender, { text: 'A automação foi retomada.' });
+                delete userPauseStatus[sender];
+                sock.sendMessage(sender, { text: mainMenu });
+            } else {
+                return;
+            }
+        };
 
         const mainMenu = `Olá, tudo bom? Esse chat é automatizado.
 Por favor, digite o número da opção que você deseja:
@@ -94,7 +103,7 @@ Por favor, digite o número da opção que você deseja:
             
             await sock.sendMessage(sender, { text: responses["6"] });
         
-            let remainingTime = pauseDuration;
+            remainingTime = pauseDuration;
         
             const interval = setInterval(() => {
                 remainingTime -= countdownInterval;
