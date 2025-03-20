@@ -30,7 +30,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!`,
 
-    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por *10 minutos*. Durante esse período, as mensagens não serão respondidas automaticamente. Caso queira retomar a automação em qualquer momento digite:\n/finalizar`,
+    "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por *10 minutos*. Durante esse período, as mensagens não serão respondidas automaticamente. Caso queira retomar a automação em qualquer momento digite:\n*/finalizar*`,
 
     "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portflólio: https://danielmazzeu.com.br`,
 
@@ -115,7 +115,7 @@ Por favor, digite o número da opção que você deseja:
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
-                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar. Caso queira retomar a automação em qualquer momento digite:\n/finalizar` });
+                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar. Caso queira retomar a automação em qualquer momento digite:\n*/finalizar*` });
                 }
             }, countdownInterval);
         
