@@ -121,9 +121,9 @@ Por favor, digite o número da opção que você deseja:
                 const msg = messages[0];
                 const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
                 if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
+                    sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
                     clearInterval(userInterval[sender]);
                     delete userPauseStatus[sender];
-                    sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
                 }
             });
 
