@@ -72,7 +72,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 4 ]* Chave Pix
 *[ 7 ]* Meu portfólio
 *[ 5 ]* Emergência
-*[ 0 ]* Pausar automação por 10 minutos`;
+*[ 6 ]* Pausar automação por 10 minutos`;
 
         if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: mainMenu });
@@ -87,10 +87,8 @@ Por favor, digite o número da opção que você deseja:
             }, 300000); // 5 minutos
         }
 
-        if (text.trim() === "0") {
+        if (text.trim() === "6") {
             userPauseStatus[sender] = true;
-        
-            // Definindo os tempos em variáveis para facilitar futuras alterações
             const pauseDuration = 600000; // 10 minutos (duração total da pausa)
             const countdownInterval = 120000; // 2 minutos (intervalo para a contagem regressiva)
             
@@ -101,22 +99,20 @@ Por favor, digite o número da opção que você deseja:
             const interval = setInterval(() => {
                 remainingTime -= countdownInterval;
         
-                // Verifica se o tempo acabou
                 if (remainingTime <= 0) {
-                    clearInterval(interval); // Para o intervalo
+                    clearInterval(interval);
                     sock.sendMessage(sender, { text: "O tempo de pausa acabou! A automação foi retomada." });
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: mainMenu });
                 } else {
-                    // Calcula o tempo restante em minutos e envia a mensagem
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
                     sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.` });
                 }
-            }, countdownInterval); // Envia a cada 2 minutos
-
-            return;
-        }
+            }, countdownInterval);
         
+            return;
+        }        
+
         await sock.sendMessage(sender, { text: responses[text.trim()] });
 
         console.log(`Resposta enviada para ${sender}: ${responses[text.trim()]}`);
