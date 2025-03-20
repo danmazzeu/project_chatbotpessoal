@@ -79,7 +79,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 5 ]* Emergência
 *[ 0 ]* Pausar automação por 10 minutos`;
 
-        if (!text || !responses[text.trim()]) {
+        if (!text || !responses[text.trim()] && !userPauseStatus[sender]) {
             await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
@@ -125,7 +125,6 @@ Por favor, digite o número da opção que você deseja:
                 }
             }, countdownInterval);
 
-            // Armazenar o intervalo para o usuário para poder limpar mais tarde
             userInterval[sender] = interval;
 
             return;
