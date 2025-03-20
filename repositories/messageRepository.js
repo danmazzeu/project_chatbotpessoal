@@ -47,7 +47,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "1.7": `Opção selecionada - *Filme favorito*\n\nNunca fui muito de assistir filmes, mas o único que me fez repetir inúmeras vezes foi John Wick, 1, 2, 3 e 4. Esses filmes revelam segredos e valores morais de um homem de bem, que valoriza o que é realmente importante até o último segundo, mesmo que isso custe sua própria vida.\n\nhttps://www.youtube.com/watch?v=ROFnIg4_Uio`,
 
-    "1.8": `Opção selecionada - *Política*\n\nA política muitas vezes se mostra uma perda de tempo. Ela favorece apenas aqueles que estão no poder, enquanto o povo é frequentemente negligenciado. Independentemente do partido, os políticos, em sua maioria, são os piores tipos de seres humanos. Aqueles que deveriam guiar a população com sabedoria e compaixão, usando seu conhecimento para o bem comum, acabam abusando da confiança das pessoas. Na política, a virtude parece inexistir. Se você torce para algum político, nem me mande mensagem.`,
+    "1.8": `Opção selecionada - *Política*\n\nA política muitas vezes se mostra uma perda de tempo. Ela favorece apenas aqueles que estão no poder, enquanto o povo é frequentemente negligenciado. Independentemente do partido, os políticos, em sua maioria, são os piores tipos de seres humanos. Aqueles que deveriam guiar a população com sabedoria e compaixão, usando seu conhecimento para o bem comum, acabam abusando da confiança das pessoas. Na política, a virtude parece inexistir. Se você torce para algum político ou partido, nem me mande mensagem.`,
 
     "1.9": `Opção selecionada - *Comida favorita*\n\nComo de tudo, sem frescura.\nNão sou fã de doce apenas.`,
 
