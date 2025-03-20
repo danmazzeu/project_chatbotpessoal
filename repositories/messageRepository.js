@@ -64,7 +64,7 @@ async function handleMessage(sock, msg) {
 
         if (userPauseStatus[sender]) {
             if (text.trim() === "/retomar") {
-                sock.sendMessage(sender, { text: 'A automação foi retomada.' });
+                sock.sendMessage(sender, { text: '*A automação foi retomada.*' });
                 delete userPauseStatus[sender];
                 sock.sendMessage(sender, { text: mainMenu });
             } else {
