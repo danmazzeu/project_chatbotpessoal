@@ -64,7 +64,7 @@ async function handleMessage(sock, msg) {
 
         // Verifica se o usuário está em pausa
         if (userPauseStatus[sender]) {
-            // Se o usuário estiver pausado, ignora qualquer outra mensagem
+            // Não responde se o usuário estiver em pausa
             return;
         }
 
@@ -79,7 +79,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 5 ]* Emergência
 *[ 0 ]* Pausar automação por 10 minutos`;
 
-        if (!text || !responses[text.trim()] && !userPauseStatus[sender]) {
+        if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
