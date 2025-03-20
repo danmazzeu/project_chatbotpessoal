@@ -85,6 +85,15 @@ Por favor, digite o número da opção que você deseja:
             return;
         }
 
+        // Verificação para finalizar pausa
+        if (text.trim() === "/finalizar" && userPauseStatus[sender]) {
+            clearInterval(userInterval[sender]);
+            delete userPauseStatus[sender];
+            sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
+            sock.sendMessage(sender, { text: mainMenu });
+            return;  // Impede o envio da resposta após finalização
+        }
+
         if (text.trim() === "3") {
             userPauseStatus[sender] = true;
             setTimeout(() => {
@@ -118,18 +127,6 @@ Por favor, digite o número da opção que você deseja:
 
             // Armazenar o intervalo para o usuário para poder limpar mais tarde
             userInterval[sender] = interval;
-
-            // Escutando o comando de finalizar a pausa
-            sock.ev.on('messages.upsert', async ({ messages }) => {
-                const msg = messages[0];
-                const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
-                if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
-                    clearInterval(userInterval[sender]);
-                    delete userPauseStatus[sender];
-                    sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
-                    sock.sendMessage(sender, { text: mainMenu });
-                }
-            });
 
             return;
         }
