@@ -62,8 +62,11 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
-        // Se o usuário já estiver em pausa, ignora a mensagem
-        if (userPauseStatus[sender]) return;
+        // Verifica se o usuário está em pausa
+        if (userPauseStatus[sender]) {
+            // Se o usuário estiver pausado, ignora qualquer outra mensagem
+            return;
+        }
 
         const mainMenu = `Olá, tudo bom? Esse chat é automatizado.
 Por favor, digite o número da opção que você deseja:
@@ -76,7 +79,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 5 ]* Emergência
 *[ 0 ]* Pausar automação por 10 minutos`;
 
-        if (!text || !responses[text.trim()] || !text.trim() === "/finalizar") {
+        if (!text || !responses[text.trim()]) {
             await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
@@ -121,9 +124,10 @@ Por favor, digite o número da opção que você deseja:
                 const msg = messages[0];
                 const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
                 if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
-                    sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
                     clearInterval(userInterval[sender]);
                     delete userPauseStatus[sender];
+                    sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
+                    sock.sendMessage(sender, { text: mainMenu });
                 }
             });
 
