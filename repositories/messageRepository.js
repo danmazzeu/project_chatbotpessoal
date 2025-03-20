@@ -1,6 +1,7 @@
 const fs = require('fs');
 
-let userPauseStatus = {};
+let userPauseStatus = {};  // Armazenar o status de pausa dos usuários
+let userInterval = {};     // Armazenar o intervalo de cada usuário para controle de pausa
 
 const responses = {
     "1": `Escolha uma opção:
@@ -31,7 +32,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por 10 minutos. Durante esse período, as mensagens não serão respondidas automaticamente.`,
 
-    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portflólio: https://danielmazzeu.com.br`,
+    "7": `Opção selecionada: *7 - Meu portfólio*\n\nAqui está o portfólio: https://danielmazzeu.com.br`,
 
     "1.1": `Opção selecionada - *Idade*\n\nTenho 34 anos.\nSigno de câncer.`,
 
@@ -61,6 +62,7 @@ async function handleMessage(sock, msg) {
 
         console.log(`Mensagem recebida de ${sender}: ${text}`);
 
+        // Se o usuário já estiver em pausa, ignora a mensagem
         if (userPauseStatus[sender]) return;
 
         const mainMenu = `Olá, tudo bom? Esse chat é automatizado.
@@ -90,7 +92,6 @@ Por favor, digite o número da opção que você deseja:
 
         if (text.trim() === "0") {
             userPauseStatus[sender] = true;
-
             const pauseDuration = 600000; // 10 minutos
             const countdownInterval = 120000; // 2 minutos
 
@@ -112,14 +113,18 @@ Por favor, digite o número da opção que você deseja:
                 }
             }, countdownInterval);
 
-            // Colocando a escuta do comando de finalização fora da função handleMessage
+            // Armazenar o intervalo para o usuário para poder limpar mais tarde
+            userInterval[sender] = interval;
+
+            // Escutando o comando de finalizar a pausa
             sock.ev.on('messages.upsert', async ({ messages }) => {
                 const msg = messages[0];
                 const messageText = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
                 if (messageText.trim() === "/finalizar" && userPauseStatus[sender]) {
-                    clearInterval(interval);
+                    clearInterval(userInterval[sender]);
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
+                    sock.sendMessage(sender, { text: mainMenu });
                 }
             });
 
