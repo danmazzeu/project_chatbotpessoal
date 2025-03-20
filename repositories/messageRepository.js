@@ -75,6 +75,7 @@ Por favor, digite o número da opção que você deseja:
 *[ 0 ]* Pausar automação por 10 minutos`;
 
         if (!text || !responses[text.trim()]) {
+            await sock.sendMessage(sender, { text: "Desculpe, opção inválida. Por favor, escolha uma das opções." });
             await sock.sendMessage(sender, { text: mainMenu });
             return;
         }
@@ -119,7 +120,6 @@ Por favor, digite o número da opção que você deseja:
                     clearInterval(interval);
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: '*Pausa finalizada. A automação foi retomada.*' });
-                    sock.sendMessage(sender, { text: mainMenu });
                 }
             });
 
