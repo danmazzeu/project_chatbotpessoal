@@ -110,7 +110,7 @@ Por favor, digite o número da opção que você deseja:
                 } else {
                     // Calcula o tempo restante em minutos e envia a mensagem
                     const minutesRemaining = Math.ceil(remainingTime / 60000);
-                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.\nPara encerrar a pausa digite a qualquer momento */finalizar*` });
+                    sock.sendMessage(sender, { text: `Restam *${minutesRemaining} minuto(s)* para a pausa acabar.\nPara encerrar a pausa digite a qualquer momento\n*/finalizar*` });
                 }
             }, countdownInterval); // Envia a cada 2 minutos
         
@@ -122,7 +122,6 @@ Por favor, digite o número da opção que você deseja:
                     clearInterval(interval);
                     delete userPauseStatus[sender];
                     sock.sendMessage(sender, { text: "Pausa finalizada. A automação foi retomada." });
-                    sock.sendMessage(sender, { text: mainMenu });
                 }
             });
         
