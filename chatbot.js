@@ -19,18 +19,22 @@ async function startBot() {
         sock.ev.on('connection.update', async (update) => {
             try {
                 console.log('Atualização de conexão:', update);
-
+        
                 if (update.qr) {
                     console.log('QR Code gerado:', update.qr);
                     await generateQRCode(update.qr);
                 }
-
+        
+                if (update.lastDisconnect?.error) {
+                    console.error('Erro de desconexão:', update.lastDisconnect.error);
+                }
+        
                 switch (update.connection) {
                     case 'open':
                         console.log('Bot conectado com sucesso!');
                         reconnectAttempts = 0;
                         break;
-                    
+        
                     case 'close':
                         console.error('Conexão fechada. Tentando reiniciar...');
                         if (reconnectAttempts < maxReconnectAttempts) {
@@ -42,7 +46,7 @@ async function startBot() {
                             console.error('Número máximo de tentativas de reconexão alcançado.');
                         }
                         break;
-
+        
                     case 'connecting':
                         console.log('Bot tentando se conectar...');
                         break;
@@ -50,7 +54,7 @@ async function startBot() {
             } catch (error) {
                 console.error('Erro ao atualizar conexão:', error);
             }
-        });
+        });        
 
         sock.ev.on('creds.update', saveCreds);
 
