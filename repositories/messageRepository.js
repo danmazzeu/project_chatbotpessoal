@@ -28,7 +28,7 @@ Opção selecionada: *2 - Redes Sociais*`,
 
     "4": `Opção selecionada: *4 - Chave Pix*\n\nDepois eu coloco...`,
 
-    "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para Daniel seguido de um SMS, já entrarei em contato contigo!`,
+    "5": `Opção selecionada: *5 - Emergência*\n\nUm e-mail foi enviado para min, seguido de um SMS, já entrarei em contato contigo!`,
 
     "6": `Opção selecionada: *6 - Pausar automação*\n\nO sistema ficará em pausa por *10 minutos*. Durante esse período, as mensagens não serão respondidas automaticamente.\n\nCaso queira retomar a automação em qualquer momento digite:\n*/retomar*`,
 
